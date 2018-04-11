@@ -4,22 +4,30 @@
   var scraper = {
     iterator: '.hard .palm-one-whole',
     data: {
-      trip_id: function($) { return $(this).closest('tr').prev().data('target').slice(6); },
       date: function($) { return $(this).closest('tr').prev().find('td:nth-child(2)').text().substring(0,8); },
-      date_time: {sel: 'h6:nth-child(3)', method: 'text'},
-      driver: function($) { return $(this).closest('tr').prev().find('td:nth-child(3)').text(); },
-      car_type: function($) { return $(this).closest('tr').prev().find('td:nth-child(5)').text(); },
-      city: function($) { return $(this).closest('tr').prev().find('td:nth-child(6)').text(); },
-      price: {sel: 'h3', method: 'text'},
-      payment_method: function($) { return $(this).closest('tr').prev().find('td:nth-child(7) span:nth-child(2)').text().replace(/[•\s]/g,''); },
-      start_time: { sel: '.trip-address:nth-child(1) p', method:'text'},
-      start_address: { sel: '.trip-address:nth-child(1) h6', method:'text'},
-      end_time: { sel: '.trip-address:nth-child(2) p', method:'text'},
-      end_address: { sel: '.trip-address:nth-child(2) h6', method:'text'}
+      cab: function($) { return 'Cab'; },
+      uber: function($) { return 'Uber'; },
+      date2: function($) { return $(this).closest('tr').prev().find('td:nth-child(2)').text().substring(0,8); },
+      cost: function($) { 
+        var number = $(this).closest('tr').prev().find('td:nth-child(4)').text();
+        if(number) {
+          number = number.split(',').join('');
+        }
+        if (!number || !number.match(/\d+(.\d+)?/g) || !number.match(/\d+(.\d+)?/g).map(Number)) {
+          number = '';
+        }
+        else {
+          number = number.match(/\d+(.\d+)?/g).map(Number)[0];
+        }
+        return number;
+      },
     },
     params: {
       done: function(data){
-        artoo.s.pushTo('trip_list', data);
+        var trip_list = data.filter(function(element) {
+          return element.cost;
+        });
+        artoo.s.pushTo('trip_list', trip_list);
       }
     } 
   };
