@@ -59,7 +59,7 @@
         artoo.saveCsv([].concat.apply([], artoo.s.get('trip_list')), {
             filename: 'trip-history.csv'
           });
-          artoo.s.remove('trip_list');          
+        artoo.s.remove('trip_list');          
       },
       settings: {
         error: function (request, status, error) {
